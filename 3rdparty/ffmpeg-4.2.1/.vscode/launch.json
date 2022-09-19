@@ -1,0 +1,69 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(gdb) 调试启动",
+            "type": "cppdbg",
+            "request": "launch",
+            //"program": "${workspaceFolder}/ffmpeg_g",
+            //"args": ["-ss","00:01:00","-i","debug/test.mp4","sample.jpg","-r","1","-vframes","1","-an","-f","mjpeg"],
+            //"args": ["-i","debug/output.aac","-c:a","copy","-f","latm","latm.aac"],
+            "program": "${workspaceFolder}/ffplay_g",
+            //"args": ["debug/test.sdp","-protocol_whitelist","file,crypto,udp,rtp"],
+            //"args": ["debug/latm.aac"],
+            /**"args": [
+                "-i",
+                "debug/test.flv",
+                "-vcodec",
+                "copy",
+                "-vbsf",
+                "h264_mp4toannexb",
+                "-an",
+                "out.h264"
+            ],**/
+            // "args": [
+            //     "-rtsp_transport",
+            //     "tcp",
+            //     "-i",
+            //     "rtsp://172.16.246.232:554/realtime?chnid=0;vid=0;aid=0;agent=cgi",
+            //     "-vcodec",
+            //     "copy",
+            //     "-an",
+            //     "-bsf:v",
+            //     "h264_mp4toannexb",
+            //     "-o",
+            //     "debug/test.h264"
+            // ],
+            //"args": ["rtsp://10.67.8.4:554/realtime?chnid=9;vid=0;aid=0;agent=cgi"],
+            //"args": ["-rtsp_transport","tcp","rtsp://172.16.246.232:554/realtime?chnid=0;vid=0;aid=0;agent=cgi"],
+            //"args": ["-rtsp_transport","tcp","rtsp://10.68.8.37:8554/live/stream1"],
+            //"args": ["rtmp://10.68.8.37:1935/live/stream"],
+            //"args": ["http://cs-kmediauni-mobil.bestkunlun.com/flv/live/livestream.m3u8"],
+            /**"args": [
+                "debug/test2.mp4"
+            ],**/
+            //"args": ["-i","debug/test.mp4","-c:v","libx264","output.mp4"],
+            "args": ["-i","2_audio.mp4","-x","720","-y","480"],
+            //"stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "为 gdb 启用整齐打印",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "将反汇编风格设置为 Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,3 @@
+/home/yangshuo/ffmpeg_demo/build/CMakeFiles/edit_cache.dir
+/home/yangshuo/ffmpeg_demo/build/CMakeFiles/rebuild_cache.dir
+/home/yangshuo/ffmpeg_demo/build/CMakeFiles/FFPLAYER.dir
