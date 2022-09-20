@@ -145,7 +145,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=FFPLAYER
+CMAKE_PROJECT_NAME:STATIC=ffmpeg_demo
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=/usr/bin/ranlib
@@ -209,11 +209,62 @@ CMAKE_STRIP:FILEPATH=/usr/bin/strip
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
-//Value Computed by CMake
-FFPLAYER_BINARY_DIR:STATIC=/home/yangshuo/ffmpeg_demo/build
+//pkg-config executable
+PKG_CONFIG_EXECUTABLE:FILEPATH=/usr/bin/pkg-config
 
 //Value Computed by CMake
-FFPLAYER_SOURCE_DIR:STATIC=/home/yangshuo/ffmpeg_demo
+ffmpeg_demo_BINARY_DIR:STATIC=/home/yangshuo/ffmpeg_demo/build
+
+//Value Computed by CMake
+ffmpeg_demo_SOURCE_DIR:STATIC=/home/yangshuo/ffmpeg_demo
+
+//Path to a library.
+pkgcfg_lib_ffmpeg_X11:FILEPATH=/usr/lib/x86_64-linux-gnu/libX11.so
+
+//Path to a library.
+pkgcfg_lib_ffmpeg_Xext:FILEPATH=/usr/lib/x86_64-linux-gnu/libXext.so
+
+//Path to a library.
+pkgcfg_lib_ffmpeg_Xv:FILEPATH=/usr/lib/x86_64-linux-gnu/libXv.so
+
+//Path to a library.
+pkgcfg_lib_ffmpeg_avcodec:FILEPATH=/home/yangshuo/ffmpeg_demo/ffmpeg_build/lib/libavcodec.a
+
+//Path to a library.
+pkgcfg_lib_ffmpeg_avformat:FILEPATH=/home/yangshuo/ffmpeg_demo/ffmpeg_build/lib/libavformat.a
+
+//Path to a library.
+pkgcfg_lib_ffmpeg_avutil:FILEPATH=/home/yangshuo/ffmpeg_demo/ffmpeg_build/lib/libavutil.a
+
+//Path to a library.
+pkgcfg_lib_ffmpeg_dl:FILEPATH=/usr/lib/x86_64-linux-gnu/libdl.so
+
+//Path to a library.
+pkgcfg_lib_ffmpeg_m:FILEPATH=/usr/lib/x86_64-linux-gnu/libm.so
+
+//Path to a library.
+pkgcfg_lib_ffmpeg_pthread:FILEPATH=/usr/lib/x86_64-linux-gnu/libpthread.so
+
+//Path to a library.
+pkgcfg_lib_ffmpeg_swresample:FILEPATH=/home/yangshuo/ffmpeg_demo/ffmpeg_build/lib/libswresample.a
+
+//Path to a library.
+pkgcfg_lib_ffmpeg_va:FILEPATH=/usr/lib/x86_64-linux-gnu/libva.so
+
+//Path to a library.
+pkgcfg_lib_ffmpeg_va-drm:FILEPATH=/usr/lib/x86_64-linux-gnu/libva-drm.so
+
+//Path to a library.
+pkgcfg_lib_ffmpeg_va-x11:FILEPATH=/usr/lib/x86_64-linux-gnu/libva-x11.so
+
+//Path to a library.
+pkgcfg_lib_ffmpeg_vdpau:FILEPATH=/usr/lib/x86_64-linux-gnu/libvdpau.so
+
+//Path to a library.
+pkgcfg_lib_ffmpeg_x264:FILEPATH=/usr/lib/x86_64-linux-gnu/libx264.so
+
+//Path to a library.
+pkgcfg_lib_ffmpeg_z:FILEPATH=/usr/lib/x86_64-linux-gnu/libz.so
 
 
 ########################
@@ -363,4 +414,89 @@ CMAKE_STRIP-ADVANCED:INTERNAL=1
 CMAKE_UNAME:INTERNAL=/usr/bin/uname
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
+//Details about finding PkgConfig
+FIND_PACKAGE_MESSAGE_DETAILS_PkgConfig:INTERNAL=[/usr/bin/pkg-config][v0.29.1()]
+//ADVANCED property for variable: PKG_CONFIG_EXECUTABLE
+PKG_CONFIG_EXECUTABLE-ADVANCED:INTERNAL=1
+__pkg_config_arguments_ffmpeg:INTERNAL=REQUIRED;IMPORTED_TARGET;libavformat;libavcodec;libavutil
+__pkg_config_checked_ffmpeg:INTERNAL=1
+ffmpeg_CFLAGS:INTERNAL=-I/home/yangshuo/ffmpeg_demo/ffmpeg_build/include
+ffmpeg_CFLAGS_I:INTERNAL=
+ffmpeg_CFLAGS_OTHER:INTERNAL=
+ffmpeg_FOUND:INTERNAL=1
+ffmpeg_INCLUDEDIR:INTERNAL=
+ffmpeg_INCLUDE_DIRS:INTERNAL=/home/yangshuo/ffmpeg_demo/ffmpeg_build/include
+ffmpeg_LDFLAGS:INTERNAL=-L/home/yangshuo/ffmpeg_demo/ffmpeg_build/lib;-lavformat;-lm;-lz;-lavcodec;-pthread;-lm;-lz;-lx264;-lpthread;-lm;-ldl;-lva;-lswresample;-lm;-lavutil;-pthread;-lva-drm;-lva;-lva-x11;-lva;-lvdpau;-lX11;-lm;-lva;-lXv;-lX11;-lXext
+ffmpeg_LDFLAGS_OTHER:INTERNAL=-pthread
+ffmpeg_LIBDIR:INTERNAL=
+ffmpeg_LIBRARIES:INTERNAL=avformat;m;z;avcodec;m;z;x264;pthread;m;dl;va;swresample;m;avutil;va-drm;va;va-x11;va;vdpau;X11;m;va;Xv;X11;Xext
+ffmpeg_LIBRARY_DIRS:INTERNAL=/home/yangshuo/ffmpeg_demo/ffmpeg_build/lib
+ffmpeg_LIBS:INTERNAL=
+ffmpeg_LIBS_L:INTERNAL=
+ffmpeg_LIBS_OTHER:INTERNAL=
+ffmpeg_LIBS_PATHS:INTERNAL=
+ffmpeg_MODULE_NAME:INTERNAL=
+ffmpeg_PREFIX:INTERNAL=
+ffmpeg_STATIC_CFLAGS:INTERNAL=-I/home/yangshuo/ffmpeg_demo/ffmpeg_build/include
+ffmpeg_STATIC_CFLAGS_I:INTERNAL=
+ffmpeg_STATIC_CFLAGS_OTHER:INTERNAL=
+ffmpeg_STATIC_INCLUDE_DIRS:INTERNAL=/home/yangshuo/ffmpeg_demo/ffmpeg_build/include
+ffmpeg_STATIC_LDFLAGS:INTERNAL=-L/home/yangshuo/ffmpeg_demo/ffmpeg_build/lib;-lavformat;-lm;-lz;-lavcodec;-pthread;-lm;-lz;-lx264;-lpthread;-lm;-ldl;-lva;-lswresample;-lm;-lavutil;-pthread;-lva-drm;-lva;-lva-x11;-lva;-lvdpau;-lX11;-lm;-lva;-lXv;-lX11;-lXext
+ffmpeg_STATIC_LDFLAGS_OTHER:INTERNAL=-pthread
+ffmpeg_STATIC_LIBDIR:INTERNAL=
+ffmpeg_STATIC_LIBRARIES:INTERNAL=avformat;m;z;avcodec;m;z;x264;pthread;m;dl;va;swresample;m;avutil;va-drm;va;va-x11;va;vdpau;X11;m;va;Xv;X11;Xext
+ffmpeg_STATIC_LIBRARY_DIRS:INTERNAL=/home/yangshuo/ffmpeg_demo/ffmpeg_build/lib
+ffmpeg_STATIC_LIBS:INTERNAL=
+ffmpeg_STATIC_LIBS_L:INTERNAL=
+ffmpeg_STATIC_LIBS_OTHER:INTERNAL=
+ffmpeg_STATIC_LIBS_PATHS:INTERNAL=
+ffmpeg_VERSION:INTERNAL=
+ffmpeg_libavcodec_INCLUDEDIR:INTERNAL=/home/yangshuo/ffmpeg_demo/ffmpeg_build/include
+ffmpeg_libavcodec_LIBDIR:INTERNAL=/home/yangshuo/ffmpeg_demo/ffmpeg_build/lib
+ffmpeg_libavcodec_MODULE_NAME:INTERNAL=libavcodec
+ffmpeg_libavcodec_PREFIX:INTERNAL=/home/yangshuo/ffmpeg_demo/ffmpeg_build
+ffmpeg_libavcodec_VERSION:INTERNAL=58.54.100
+ffmpeg_libavformat_INCLUDEDIR:INTERNAL=/home/yangshuo/ffmpeg_demo/ffmpeg_build/include
+ffmpeg_libavformat_LIBDIR:INTERNAL=/home/yangshuo/ffmpeg_demo/ffmpeg_build/lib
+ffmpeg_libavformat_MODULE_NAME:INTERNAL=libavformat
+ffmpeg_libavformat_PREFIX:INTERNAL=/home/yangshuo/ffmpeg_demo/ffmpeg_build
+ffmpeg_libavformat_VERSION:INTERNAL=58.29.100
+ffmpeg_libavutil_INCLUDEDIR:INTERNAL=/home/yangshuo/ffmpeg_demo/ffmpeg_build/include
+ffmpeg_libavutil_LIBDIR:INTERNAL=/home/yangshuo/ffmpeg_demo/ffmpeg_build/lib
+ffmpeg_libavutil_MODULE_NAME:INTERNAL=libavutil
+ffmpeg_libavutil_PREFIX:INTERNAL=/home/yangshuo/ffmpeg_demo/ffmpeg_build
+ffmpeg_libavutil_VERSION:INTERNAL=56.31.100
+//ADVANCED property for variable: pkgcfg_lib_ffmpeg_X11
+pkgcfg_lib_ffmpeg_X11-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_ffmpeg_Xext
+pkgcfg_lib_ffmpeg_Xext-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_ffmpeg_Xv
+pkgcfg_lib_ffmpeg_Xv-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_ffmpeg_avcodec
+pkgcfg_lib_ffmpeg_avcodec-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_ffmpeg_avformat
+pkgcfg_lib_ffmpeg_avformat-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_ffmpeg_avutil
+pkgcfg_lib_ffmpeg_avutil-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_ffmpeg_dl
+pkgcfg_lib_ffmpeg_dl-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_ffmpeg_m
+pkgcfg_lib_ffmpeg_m-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_ffmpeg_pthread
+pkgcfg_lib_ffmpeg_pthread-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_ffmpeg_swresample
+pkgcfg_lib_ffmpeg_swresample-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_ffmpeg_va
+pkgcfg_lib_ffmpeg_va-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_ffmpeg_va-drm
+pkgcfg_lib_ffmpeg_va-drm-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_ffmpeg_va-x11
+pkgcfg_lib_ffmpeg_va-x11-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_ffmpeg_vdpau
+pkgcfg_lib_ffmpeg_vdpau-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_ffmpeg_x264
+pkgcfg_lib_ffmpeg_x264-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_ffmpeg_z
+pkgcfg_lib_ffmpeg_z-ADVANCED:INTERNAL=1
+prefix_result:INTERNAL=/home/yangshuo/ffmpeg_demo/ffmpeg_build/lib
 

@@ -9,6 +9,6 @@ Version: 58.54.100
 Requires: libswresample >= 3.5.100, libavutil >= 56.31.100
 Requires.private: 
 Conflicts:
-Libs: -L${libdir}  -lavcodec -lvpx -lm -lvpx -lm -lvpx -lm -lvpx -lm -pthread -lm -lz -lfdk-aac -lmp3lame -lm -lopus -lx264 -lx265 -lva
+Libs: -L${libdir}  -lavcodec -pthread -lm -lz -lx264 -lpthread -lm -ldl -lva
 Libs.private: 
 Cflags: -I${includedir}

@@ -56,17 +56,6 @@ CMAKE_BINARY_DIR = /home/yangshuo/ffmpeg_demo/build
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target edit_cache
-edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
-.PHONY : edit_cache
-
-# Special rule for the target edit_cache
-edit_cache/fast: edit_cache
-
-.PHONY : edit_cache/fast
-
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
@@ -77,6 +66,17 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 
 .PHONY : rebuild_cache/fast
+
+# Special rule for the target edit_cache
+edit_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
+	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+.PHONY : edit_cache
+
+# Special rule for the target edit_cache
+edit_cache/fast: edit_cache
+
+.PHONY : edit_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -111,71 +111,44 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named FFPLAYER
+# Target rules for targets named ffmpeg_demo
 
 # Build rule for target.
-FFPLAYER: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 FFPLAYER
-.PHONY : FFPLAYER
+ffmpeg_demo: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 ffmpeg_demo
+.PHONY : ffmpeg_demo
 
 # fast build rule for target.
-FFPLAYER/fast:
-	$(MAKE) -f CMakeFiles/FFPLAYER.dir/build.make CMakeFiles/FFPLAYER.dir/build
-.PHONY : FFPLAYER/fast
+ffmpeg_demo/fast:
+	$(MAKE) -f CMakeFiles/ffmpeg_demo.dir/build.make CMakeFiles/ffmpeg_demo.dir/build
+.PHONY : ffmpeg_demo/fast
 
-cmdutils.o: cmdutils.c.o
+main.o: main.cpp.o
 
-.PHONY : cmdutils.o
-
-# target to build an object file
-cmdutils.c.o:
-	$(MAKE) -f CMakeFiles/FFPLAYER.dir/build.make CMakeFiles/FFPLAYER.dir/cmdutils.c.o
-.PHONY : cmdutils.c.o
-
-cmdutils.i: cmdutils.c.i
-
-.PHONY : cmdutils.i
-
-# target to preprocess a source file
-cmdutils.c.i:
-	$(MAKE) -f CMakeFiles/FFPLAYER.dir/build.make CMakeFiles/FFPLAYER.dir/cmdutils.c.i
-.PHONY : cmdutils.c.i
-
-cmdutils.s: cmdutils.c.s
-
-.PHONY : cmdutils.s
-
-# target to generate assembly for a file
-cmdutils.c.s:
-	$(MAKE) -f CMakeFiles/FFPLAYER.dir/build.make CMakeFiles/FFPLAYER.dir/cmdutils.c.s
-.PHONY : cmdutils.c.s
-
-ffplay.o: ffplay.c.o
-
-.PHONY : ffplay.o
+.PHONY : main.o
 
 # target to build an object file
-ffplay.c.o:
-	$(MAKE) -f CMakeFiles/FFPLAYER.dir/build.make CMakeFiles/FFPLAYER.dir/ffplay.c.o
-.PHONY : ffplay.c.o
+main.cpp.o:
+	$(MAKE) -f CMakeFiles/ffmpeg_demo.dir/build.make CMakeFiles/ffmpeg_demo.dir/main.cpp.o
+.PHONY : main.cpp.o
 
-ffplay.i: ffplay.c.i
+main.i: main.cpp.i
 
-.PHONY : ffplay.i
+.PHONY : main.i
 
 # target to preprocess a source file
-ffplay.c.i:
-	$(MAKE) -f CMakeFiles/FFPLAYER.dir/build.make CMakeFiles/FFPLAYER.dir/ffplay.c.i
-.PHONY : ffplay.c.i
+main.cpp.i:
+	$(MAKE) -f CMakeFiles/ffmpeg_demo.dir/build.make CMakeFiles/ffmpeg_demo.dir/main.cpp.i
+.PHONY : main.cpp.i
 
-ffplay.s: ffplay.c.s
+main.s: main.cpp.s
 
-.PHONY : ffplay.s
+.PHONY : main.s
 
 # target to generate assembly for a file
-ffplay.c.s:
-	$(MAKE) -f CMakeFiles/FFPLAYER.dir/build.make CMakeFiles/FFPLAYER.dir/ffplay.c.s
-.PHONY : ffplay.c.s
+main.cpp.s:
+	$(MAKE) -f CMakeFiles/ffmpeg_demo.dir/build.make CMakeFiles/ffmpeg_demo.dir/main.cpp.s
+.PHONY : main.cpp.s
 
 # Help Target
 help:
@@ -183,15 +156,12 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... FFPLAYER"
-	@echo "... cmdutils.o"
-	@echo "... cmdutils.i"
-	@echo "... cmdutils.s"
-	@echo "... ffplay.o"
-	@echo "... ffplay.i"
-	@echo "... ffplay.s"
+	@echo "... edit_cache"
+	@echo "... ffmpeg_demo"
+	@echo "... main.o"
+	@echo "... main.i"
+	@echo "... main.s"
 .PHONY : help
 
 

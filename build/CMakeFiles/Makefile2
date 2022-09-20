@@ -53,7 +53,7 @@ CMAKE_BINARY_DIR = /home/yangshuo/ffmpeg_demo/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/FFPLAYER.dir/all
+all: CMakeFiles/ffmpeg_demo.dir/all
 
 .PHONY : all
 
@@ -63,36 +63,36 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/FFPLAYER.dir/clean
+clean: CMakeFiles/ffmpeg_demo.dir/clean
 
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/FFPLAYER.dir
+# Target rules for target CMakeFiles/ffmpeg_demo.dir
 
 # All Build rule for target.
-CMakeFiles/FFPLAYER.dir/all:
-	$(MAKE) -f CMakeFiles/FFPLAYER.dir/build.make CMakeFiles/FFPLAYER.dir/depend
-	$(MAKE) -f CMakeFiles/FFPLAYER.dir/build.make CMakeFiles/FFPLAYER.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/yangshuo/ffmpeg_demo/build/CMakeFiles --progress-num=1,2,3 "Built target FFPLAYER"
-.PHONY : CMakeFiles/FFPLAYER.dir/all
+CMakeFiles/ffmpeg_demo.dir/all:
+	$(MAKE) -f CMakeFiles/ffmpeg_demo.dir/build.make CMakeFiles/ffmpeg_demo.dir/depend
+	$(MAKE) -f CMakeFiles/ffmpeg_demo.dir/build.make CMakeFiles/ffmpeg_demo.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/yangshuo/ffmpeg_demo/build/CMakeFiles --progress-num=1,2 "Built target ffmpeg_demo"
+.PHONY : CMakeFiles/ffmpeg_demo.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/FFPLAYER.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/yangshuo/ffmpeg_demo/build/CMakeFiles 3
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/FFPLAYER.dir/all
+CMakeFiles/ffmpeg_demo.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/yangshuo/ffmpeg_demo/build/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/ffmpeg_demo.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/yangshuo/ffmpeg_demo/build/CMakeFiles 0
-.PHONY : CMakeFiles/FFPLAYER.dir/rule
+.PHONY : CMakeFiles/ffmpeg_demo.dir/rule
 
 # Convenience name for target.
-FFPLAYER: CMakeFiles/FFPLAYER.dir/rule
+ffmpeg_demo: CMakeFiles/ffmpeg_demo.dir/rule
 
-.PHONY : FFPLAYER
+.PHONY : ffmpeg_demo
 
 # clean rule for target.
-CMakeFiles/FFPLAYER.dir/clean:
-	$(MAKE) -f CMakeFiles/FFPLAYER.dir/build.make CMakeFiles/FFPLAYER.dir/clean
-.PHONY : CMakeFiles/FFPLAYER.dir/clean
+CMakeFiles/ffmpeg_demo.dir/clean:
+	$(MAKE) -f CMakeFiles/ffmpeg_demo.dir/build.make CMakeFiles/ffmpeg_demo.dir/clean
+.PHONY : CMakeFiles/ffmpeg_demo.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.
