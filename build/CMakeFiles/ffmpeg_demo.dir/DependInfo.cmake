@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/yangshuo/ffmpeg_demo/main.cpp" "/home/yangshuo/ffmpeg_demo/build/CMakeFiles/ffmpeg_demo.dir/main.cpp.o"
+  "/home/yangshuo/Desktop/ffmpeg_demo/main.cpp" "/home/yangshuo/Desktop/ffmpeg_demo/build/CMakeFiles/ffmpeg_demo.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

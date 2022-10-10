@@ -186,14 +186,6 @@ log.h
 pixfmt.h
 ../ffmpeg_build/include/libavutil/pixfmt.h
 
-../ffmpeg_build/include/libavutil/imgutils.h
-avutil.h
-../ffmpeg_build/include/libavutil/avutil.h
-pixdesc.h
-../ffmpeg_build/include/libavutil/pixdesc.h
-rational.h
-../ffmpeg_build/include/libavutil/rational.h
-
 ../ffmpeg_build/include/libavutil/intfloat.h
 stdint.h
 -
@@ -236,16 +228,6 @@ error.h
 avutil.h
 ../ffmpeg_build/include/libavutil/avutil.h
 
-../ffmpeg_build/include/libavutil/pixdesc.h
-inttypes.h
--
-attributes.h
-../ffmpeg_build/include/libavutil/attributes.h
-pixfmt.h
-../ffmpeg_build/include/libavutil/pixfmt.h
-version.h
-../ffmpeg_build/include/libavutil/version.h
-
 ../ffmpeg_build/include/libavutil/pixfmt.h
 libavutil/avconfig.h
 ../ffmpeg_build/include/libavutil/libavutil/avconfig.h
@@ -272,15 +254,11 @@ attributes.h
 macros.h
 ../ffmpeg_build/include/libavutil/macros.h
 
-/home/yangshuo/ffmpeg_demo/main.cpp
+/home/yangshuo/Desktop/ffmpeg_demo/main.cpp
 string
 -
-iostream
+stdio.h
 -
 libavformat/avformat.h
-/home/yangshuo/ffmpeg_demo/libavformat/avformat.h
-libavcodec/avcodec.h
-/home/yangshuo/ffmpeg_demo/libavcodec/avcodec.h
-libavutil/imgutils.h
-/home/yangshuo/ffmpeg_demo/libavutil/imgutils.h
+/home/yangshuo/Desktop/ffmpeg_demo/libavformat/avformat.h
 

@@ -17,13 +17,11 @@ CMakeFiles/ffmpeg_demo.dir/main.cpp.o: ../ffmpeg_build/include/libavutil/dict.h
 CMakeFiles/ffmpeg_demo.dir/main.cpp.o: ../ffmpeg_build/include/libavutil/error.h
 CMakeFiles/ffmpeg_demo.dir/main.cpp.o: ../ffmpeg_build/include/libavutil/frame.h
 CMakeFiles/ffmpeg_demo.dir/main.cpp.o: ../ffmpeg_build/include/libavutil/hwcontext.h
-CMakeFiles/ffmpeg_demo.dir/main.cpp.o: ../ffmpeg_build/include/libavutil/imgutils.h
 CMakeFiles/ffmpeg_demo.dir/main.cpp.o: ../ffmpeg_build/include/libavutil/intfloat.h
 CMakeFiles/ffmpeg_demo.dir/main.cpp.o: ../ffmpeg_build/include/libavutil/log.h
 CMakeFiles/ffmpeg_demo.dir/main.cpp.o: ../ffmpeg_build/include/libavutil/macros.h
 CMakeFiles/ffmpeg_demo.dir/main.cpp.o: ../ffmpeg_build/include/libavutil/mathematics.h
 CMakeFiles/ffmpeg_demo.dir/main.cpp.o: ../ffmpeg_build/include/libavutil/mem.h
-CMakeFiles/ffmpeg_demo.dir/main.cpp.o: ../ffmpeg_build/include/libavutil/pixdesc.h
 CMakeFiles/ffmpeg_demo.dir/main.cpp.o: ../ffmpeg_build/include/libavutil/pixfmt.h
 CMakeFiles/ffmpeg_demo.dir/main.cpp.o: ../ffmpeg_build/include/libavutil/rational.h
 CMakeFiles/ffmpeg_demo.dir/main.cpp.o: ../ffmpeg_build/include/libavutil/samplefmt.h

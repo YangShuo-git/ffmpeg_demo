@@ -18,15 +18,13 @@ CMakeFiles/ffmpeg_demo.dir/main.cpp.o
  ../ffmpeg_build/include/libavutil/error.h
  ../ffmpeg_build/include/libavutil/frame.h
  ../ffmpeg_build/include/libavutil/hwcontext.h
- ../ffmpeg_build/include/libavutil/imgutils.h
  ../ffmpeg_build/include/libavutil/intfloat.h
  ../ffmpeg_build/include/libavutil/log.h
  ../ffmpeg_build/include/libavutil/macros.h
  ../ffmpeg_build/include/libavutil/mathematics.h
  ../ffmpeg_build/include/libavutil/mem.h
- ../ffmpeg_build/include/libavutil/pixdesc.h
  ../ffmpeg_build/include/libavutil/pixfmt.h
  ../ffmpeg_build/include/libavutil/rational.h
  ../ffmpeg_build/include/libavutil/samplefmt.h
  ../ffmpeg_build/include/libavutil/version.h
- /home/yangshuo/ffmpeg_demo/main.cpp
+ /home/yangshuo/Desktop/ffmpeg_demo/main.cpp

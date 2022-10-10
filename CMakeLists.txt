@@ -10,17 +10,9 @@ set(CMAKE_CXX_STANDARD 11)
 
 aux_source_directory(. SRCS_DIR)
 
-include_directories(${PROJECT_SOURCE_DIR}/ffmpeg_build/include/)
+include_directories(${PROJECT_SOURCE_DIR}/ffmpeg_build/include)
+link_directories(${PROJECT_SOURCE_DIR}/ffmpeg_build/lib)
 
 
 add_executable(${PROJECT_NAME} ${SRCS_DIR})
-
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(ffmpeg REQUIRED IMPORTED_TARGET libavformat libavcodec libavutil)
-target_link_libraries(${PROJECT_NAME} PkgConfig::ffmpeg)
-
-
-
-
-
-
+target_link_libraries(${PROJECT_NAME} avformat)

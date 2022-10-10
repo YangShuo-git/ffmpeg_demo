@@ -6,5 +6,5 @@ CXX_FLAGS =  -std=c++0x  -O0 -Wall -g -ggdb   -std=gnu++11
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -isystem /home/yangshuo/ffmpeg_demo/ffmpeg_build/include 
+CXX_INCLUDES = -I/home/yangshuo/Desktop/ffmpeg_demo/ffmpeg_build/include 
 
