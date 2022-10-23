@@ -54,18 +54,58 @@ CMAKE_BINARY_DIR = /home/yangshuo/Desktop/ffmpeg_demo/build
 
 # The main recursive "all" target.
 all: CMakeFiles/ffmpeg_demo.dir/all
+all: demo_decode/all
 
 .PHONY : all
 
 # The main recursive "preinstall" target.
-preinstall:
+preinstall: demo_decode/preinstall
 
 .PHONY : preinstall
 
 # The main recursive "clean" target.
 clean: CMakeFiles/ffmpeg_demo.dir/clean
+clean: demo_decode/clean
 
 .PHONY : clean
+
+#=============================================================================
+# Directory level rules for directory demo_decode
+
+# Recursive "all" directory target.
+demo_decode/all: demo_decode/CMakeFiles/demo_decode.dir/all
+demo_decode/all: demo_decode/cppcommon/all
+
+.PHONY : demo_decode/all
+
+# Recursive "preinstall" directory target.
+demo_decode/preinstall: demo_decode/cppcommon/preinstall
+
+.PHONY : demo_decode/preinstall
+
+# Recursive "clean" directory target.
+demo_decode/clean: demo_decode/CMakeFiles/demo_decode.dir/clean
+demo_decode/clean: demo_decode/cppcommon/clean
+
+.PHONY : demo_decode/clean
+
+#=============================================================================
+# Directory level rules for directory demo_decode/cppcommon
+
+# Recursive "all" directory target.
+demo_decode/cppcommon/all: demo_decode/cppcommon/CMakeFiles/common.dir/all
+
+.PHONY : demo_decode/cppcommon/all
+
+# Recursive "preinstall" directory target.
+demo_decode/cppcommon/preinstall:
+
+.PHONY : demo_decode/cppcommon/preinstall
+
+# Recursive "clean" directory target.
+demo_decode/cppcommon/clean: demo_decode/cppcommon/CMakeFiles/common.dir/clean
+
+.PHONY : demo_decode/cppcommon/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/ffmpeg_demo.dir
@@ -74,7 +114,7 @@ clean: CMakeFiles/ffmpeg_demo.dir/clean
 CMakeFiles/ffmpeg_demo.dir/all:
 	$(MAKE) -f CMakeFiles/ffmpeg_demo.dir/build.make CMakeFiles/ffmpeg_demo.dir/depend
 	$(MAKE) -f CMakeFiles/ffmpeg_demo.dir/build.make CMakeFiles/ffmpeg_demo.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/yangshuo/Desktop/ffmpeg_demo/build/CMakeFiles --progress-num=1,2 "Built target ffmpeg_demo"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/yangshuo/Desktop/ffmpeg_demo/build/CMakeFiles --progress-num=7,8 "Built target ffmpeg_demo"
 .PHONY : CMakeFiles/ffmpeg_demo.dir/all
 
 # Build rule for subdir invocation for target.
@@ -93,6 +133,60 @@ ffmpeg_demo: CMakeFiles/ffmpeg_demo.dir/rule
 CMakeFiles/ffmpeg_demo.dir/clean:
 	$(MAKE) -f CMakeFiles/ffmpeg_demo.dir/build.make CMakeFiles/ffmpeg_demo.dir/clean
 .PHONY : CMakeFiles/ffmpeg_demo.dir/clean
+
+#=============================================================================
+# Target rules for target demo_decode/CMakeFiles/demo_decode.dir
+
+# All Build rule for target.
+demo_decode/CMakeFiles/demo_decode.dir/all: demo_decode/cppcommon/CMakeFiles/common.dir/all
+	$(MAKE) -f demo_decode/CMakeFiles/demo_decode.dir/build.make demo_decode/CMakeFiles/demo_decode.dir/depend
+	$(MAKE) -f demo_decode/CMakeFiles/demo_decode.dir/build.make demo_decode/CMakeFiles/demo_decode.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/yangshuo/Desktop/ffmpeg_demo/build/CMakeFiles --progress-num=4,5,6 "Built target demo_decode"
+.PHONY : demo_decode/CMakeFiles/demo_decode.dir/all
+
+# Build rule for subdir invocation for target.
+demo_decode/CMakeFiles/demo_decode.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/yangshuo/Desktop/ffmpeg_demo/build/CMakeFiles 6
+	$(MAKE) -f CMakeFiles/Makefile2 demo_decode/CMakeFiles/demo_decode.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/yangshuo/Desktop/ffmpeg_demo/build/CMakeFiles 0
+.PHONY : demo_decode/CMakeFiles/demo_decode.dir/rule
+
+# Convenience name for target.
+demo_decode: demo_decode/CMakeFiles/demo_decode.dir/rule
+
+.PHONY : demo_decode
+
+# clean rule for target.
+demo_decode/CMakeFiles/demo_decode.dir/clean:
+	$(MAKE) -f demo_decode/CMakeFiles/demo_decode.dir/build.make demo_decode/CMakeFiles/demo_decode.dir/clean
+.PHONY : demo_decode/CMakeFiles/demo_decode.dir/clean
+
+#=============================================================================
+# Target rules for target demo_decode/cppcommon/CMakeFiles/common.dir
+
+# All Build rule for target.
+demo_decode/cppcommon/CMakeFiles/common.dir/all:
+	$(MAKE) -f demo_decode/cppcommon/CMakeFiles/common.dir/build.make demo_decode/cppcommon/CMakeFiles/common.dir/depend
+	$(MAKE) -f demo_decode/cppcommon/CMakeFiles/common.dir/build.make demo_decode/cppcommon/CMakeFiles/common.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/yangshuo/Desktop/ffmpeg_demo/build/CMakeFiles --progress-num=1,2,3 "Built target common"
+.PHONY : demo_decode/cppcommon/CMakeFiles/common.dir/all
+
+# Build rule for subdir invocation for target.
+demo_decode/cppcommon/CMakeFiles/common.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/yangshuo/Desktop/ffmpeg_demo/build/CMakeFiles 3
+	$(MAKE) -f CMakeFiles/Makefile2 demo_decode/cppcommon/CMakeFiles/common.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/yangshuo/Desktop/ffmpeg_demo/build/CMakeFiles 0
+.PHONY : demo_decode/cppcommon/CMakeFiles/common.dir/rule
+
+# Convenience name for target.
+common: demo_decode/cppcommon/CMakeFiles/common.dir/rule
+
+.PHONY : common
+
+# clean rule for target.
+demo_decode/cppcommon/CMakeFiles/common.dir/clean:
+	$(MAKE) -f demo_decode/cppcommon/CMakeFiles/common.dir/build.make demo_decode/cppcommon/CMakeFiles/common.dir/clean
+.PHONY : demo_decode/cppcommon/CMakeFiles/common.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

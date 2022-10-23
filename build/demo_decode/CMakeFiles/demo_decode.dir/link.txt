@@ -1,0 +1,1 @@
+/usr/bin/c++   -std=c++0x  -O0 -Wall -g -ggdb   CMakeFiles/demo_decode.dir/demo_decode.cpp.o CMakeFiles/demo_decode.dir/main.cpp.o  -o demo_decode   -L/home/yangshuo/Desktop/ffmpeg_demo/ffmpeg_build/lib  -Wl,-rpath,/home/yangshuo/Desktop/ffmpeg_demo/ffmpeg_build/lib -lavformat -lavcodec -lavutil cppcommon/libcommon.a 

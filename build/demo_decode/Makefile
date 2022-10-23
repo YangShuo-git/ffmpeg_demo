@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/yangshuo/Desktop/ffmpeg_demo/build/CMakeFiles /home/yangshuo/Desktop/ffmpeg_demo/build/CMakeFiles/progress.marks
-	$(MAKE) -f CMakeFiles/Makefile2 all
+	cd /home/yangshuo/Desktop/ffmpeg_demo/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/yangshuo/Desktop/ffmpeg_demo/build/CMakeFiles /home/yangshuo/Desktop/ffmpeg_demo/build/demo_decode/CMakeFiles/progress.marks
+	cd /home/yangshuo/Desktop/ffmpeg_demo/build && $(MAKE) -f CMakeFiles/Makefile2 demo_decode/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/yangshuo/Desktop/ffmpeg_demo/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	$(MAKE) -f CMakeFiles/Makefile2 clean
+	cd /home/yangshuo/Desktop/ffmpeg_demo/build && $(MAKE) -f CMakeFiles/Makefile2 demo_decode/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,57 +97,60 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	$(MAKE) -f CMakeFiles/Makefile2 preinstall
+	cd /home/yangshuo/Desktop/ffmpeg_demo/build && $(MAKE) -f CMakeFiles/Makefile2 demo_decode/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	$(MAKE) -f CMakeFiles/Makefile2 preinstall
+	cd /home/yangshuo/Desktop/ffmpeg_demo/build && $(MAKE) -f CMakeFiles/Makefile2 demo_decode/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	$(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/yangshuo/Desktop/ffmpeg_demo/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
-#=============================================================================
-# Target rules for targets named ffmpeg_demo
+# Convenience name for target.
+demo_decode/CMakeFiles/demo_decode.dir/rule:
+	cd /home/yangshuo/Desktop/ffmpeg_demo/build && $(MAKE) -f CMakeFiles/Makefile2 demo_decode/CMakeFiles/demo_decode.dir/rule
+.PHONY : demo_decode/CMakeFiles/demo_decode.dir/rule
 
-# Build rule for target.
-ffmpeg_demo: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 ffmpeg_demo
-.PHONY : ffmpeg_demo
+# Convenience name for target.
+demo_decode: demo_decode/CMakeFiles/demo_decode.dir/rule
 
-# fast build rule for target.
-ffmpeg_demo/fast:
-	$(MAKE) -f CMakeFiles/ffmpeg_demo.dir/build.make CMakeFiles/ffmpeg_demo.dir/build
-.PHONY : ffmpeg_demo/fast
-
-#=============================================================================
-# Target rules for targets named demo_decode
-
-# Build rule for target.
-demo_decode: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 demo_decode
 .PHONY : demo_decode
 
 # fast build rule for target.
 demo_decode/fast:
-	$(MAKE) -f demo_decode/CMakeFiles/demo_decode.dir/build.make demo_decode/CMakeFiles/demo_decode.dir/build
+	cd /home/yangshuo/Desktop/ffmpeg_demo/build && $(MAKE) -f demo_decode/CMakeFiles/demo_decode.dir/build.make demo_decode/CMakeFiles/demo_decode.dir/build
 .PHONY : demo_decode/fast
 
-#=============================================================================
-# Target rules for targets named common
+demo_decode.o: demo_decode.cpp.o
 
-# Build rule for target.
-common: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 common
-.PHONY : common
+.PHONY : demo_decode.o
 
-# fast build rule for target.
-common/fast:
-	$(MAKE) -f demo_decode/cppcommon/CMakeFiles/common.dir/build.make demo_decode/cppcommon/CMakeFiles/common.dir/build
-.PHONY : common/fast
+# target to build an object file
+demo_decode.cpp.o:
+	cd /home/yangshuo/Desktop/ffmpeg_demo/build && $(MAKE) -f demo_decode/CMakeFiles/demo_decode.dir/build.make demo_decode/CMakeFiles/demo_decode.dir/demo_decode.cpp.o
+.PHONY : demo_decode.cpp.o
+
+demo_decode.i: demo_decode.cpp.i
+
+.PHONY : demo_decode.i
+
+# target to preprocess a source file
+demo_decode.cpp.i:
+	cd /home/yangshuo/Desktop/ffmpeg_demo/build && $(MAKE) -f demo_decode/CMakeFiles/demo_decode.dir/build.make demo_decode/CMakeFiles/demo_decode.dir/demo_decode.cpp.i
+.PHONY : demo_decode.cpp.i
+
+demo_decode.s: demo_decode.cpp.s
+
+.PHONY : demo_decode.s
+
+# target to generate assembly for a file
+demo_decode.cpp.s:
+	cd /home/yangshuo/Desktop/ffmpeg_demo/build && $(MAKE) -f demo_decode/CMakeFiles/demo_decode.dir/build.make demo_decode/CMakeFiles/demo_decode.dir/demo_decode.cpp.s
+.PHONY : demo_decode.cpp.s
 
 main.o: main.cpp.o
 
@@ -155,7 +158,7 @@ main.o: main.cpp.o
 
 # target to build an object file
 main.cpp.o:
-	$(MAKE) -f CMakeFiles/ffmpeg_demo.dir/build.make CMakeFiles/ffmpeg_demo.dir/main.cpp.o
+	cd /home/yangshuo/Desktop/ffmpeg_demo/build && $(MAKE) -f demo_decode/CMakeFiles/demo_decode.dir/build.make demo_decode/CMakeFiles/demo_decode.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -164,7 +167,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) -f CMakeFiles/ffmpeg_demo.dir/build.make CMakeFiles/ffmpeg_demo.dir/main.cpp.i
+	cd /home/yangshuo/Desktop/ffmpeg_demo/build && $(MAKE) -f demo_decode/CMakeFiles/demo_decode.dir/build.make demo_decode/CMakeFiles/demo_decode.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -173,7 +176,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) -f CMakeFiles/ffmpeg_demo.dir/build.make CMakeFiles/ffmpeg_demo.dir/main.cpp.s
+	cd /home/yangshuo/Desktop/ffmpeg_demo/build && $(MAKE) -f demo_decode/CMakeFiles/demo_decode.dir/build.make demo_decode/CMakeFiles/demo_decode.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 # Help Target
@@ -184,9 +187,10 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... ffmpeg_demo"
 	@echo "... demo_decode"
-	@echo "... common"
+	@echo "... demo_decode.o"
+	@echo "... demo_decode.i"
+	@echo "... demo_decode.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
@@ -201,6 +205,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	$(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/yangshuo/Desktop/ffmpeg_demo/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

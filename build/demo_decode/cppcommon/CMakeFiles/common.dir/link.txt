@@ -1,0 +1,2 @@
+/usr/bin/ar qc libcommon.a  CMakeFiles/common.dir/CLog.c.o CMakeFiles/common.dir/CodecUtil.c.o
+/usr/bin/ranlib libcommon.a
