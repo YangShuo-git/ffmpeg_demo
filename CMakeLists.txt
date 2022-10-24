@@ -11,8 +11,8 @@ set(CMAKE_CXX_STANDARD 11)
 
 aux_source_directory(. SRCS_DIR)
 
-# 增加链接库的目录，否则下面就不能直接使用avformat(要加入对应的路径)
-# 以后使用这种方式来链接库，先引入库的目录，后面可以直接target库的名字
+# 增加链接库的目录，否则下面就不能直接使用avformat(而是需要加入对应的路径)
+# 以后推荐使用这种方式来链接库：先引入库的目录，后面可以直接target库的名字
 link_directories("ffmpeg_build/lib")
 
 add_subdirectory(demo_decode)
