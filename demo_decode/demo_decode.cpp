@@ -54,28 +54,32 @@ void SoftDecoder::decodeFormat(std::string srcPath)
 {
     // 创建解封装上下文
     AVFormatContext *in_fmtCtx = NULL;
-    AVCodecContext *a_decoderCtx = NULL,*v_decoderCtx = NULL;
-    int a_stream_index = -1,v_stream_index = -1;
+    AVCodecContext *a_decoderCtx = NULL, *v_decoderCtx = NULL;
+    int a_stream_index = -1, v_stream_index = -1;
     int ret = 0;
-    if ((ret = avformat_open_input(&in_fmtCtx,srcPath.c_str(),NULL,NULL)) < 0) {
-        LOGD("avformat_open_input fail %d",ret);
+
+    // 打开文件或者网络流
+    if ((ret = avformat_open_input(&in_fmtCtx, srcPath.c_str(), NULL, NULL)) < 0) {
+        LOGD("avformat_open_input fail %d", ret);
         return;
     }
     
     // 初始化封装相关参数(期间会进行解码尝试)
-    if ((ret = avformat_find_stream_info(in_fmtCtx,NULL)) < 0) {
+    if ((ret = avformat_find_stream_info(in_fmtCtx, NULL)) < 0) {
         LOGD("avformat_find_stream_info fail");
         return;
     }
     
     // 读取文件中对应的音视频流，都只取一路
-    for (int i = 0;i<in_fmtCtx->nb_streams;i++) {
+    for (int i = 0; i<in_fmtCtx->nb_streams; i++) 
+    {
         AVStream *stream = in_fmtCtx->streams[i];
         enum AVCodecID codeId = stream->codecpar->codec_id;
-        if (stream->codecpar->codec_type == AVMEDIA_TYPE_AUDIO && a_stream_index == -1) {
+        if (stream->codecpar->codec_type == AVMEDIA_TYPE_AUDIO && a_stream_index == -1) 
+        {
             a_stream_index = i;
             
-            // 通过输入文件的编码方式创建解码器
+            // 通过该流的的codeId寻找解码器，并创建解码器上下文
             AVCodec *codec = avcodec_find_decoder(codeId);
             a_decoderCtx = avcodec_alloc_context3(codec);
             if (a_decoderCtx == NULL) {
@@ -83,20 +87,19 @@ void SoftDecoder::decodeFormat(std::string srcPath)
                 releaseSources(&in_fmtCtx,NULL,NULL);
                 return;
             }
-            /** 遇到问题：音频解码失败
-             *  分析原因：未设置解码相关参数
-             *  解决方案：通过输入音频流的编码参数来设置解码参数
-             */
+            // 通过输入流的编码参数来设置解码参数，否则avcodec_open2会失败
             avcodec_parameters_to_context(a_decoderCtx, stream->codecpar);
-            
-            if ((ret = avcodec_open2(a_decoderCtx,codec,NULL)) < 0) {
+
+            // 打开解码器和解码器上下文
+            if ((ret = avcodec_open2(a_decoderCtx, codec, NULL)) < 0) {
                 LOGD("audio avcodec_open2() fail %d",ret);
                 releaseSources(&in_fmtCtx,NULL,NULL);
                 return;
             }
         }
         
-        if (stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO && v_stream_index == -1) {
+        if (stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO && v_stream_index == -1) 
+        {
             v_stream_index = i;
             
             AVCodec *codec = avcodec_find_decoder(codeId);
@@ -106,12 +109,10 @@ void SoftDecoder::decodeFormat(std::string srcPath)
                 releaseSources(&in_fmtCtx, &a_decoderCtx, NULL);
                 return;
             }
-            /** 遇到问题：视频解码失败
-            *  分析原因：未设置解码相关参数
-            *  解决方案：通过输入视频流的编码参数来设置解码参数
-            */
             avcodec_parameters_to_context(v_decoderCtx, stream->codecpar);
-            if ((ret = avcodec_open2(v_decoderCtx,codec,NULL)) < 0) {
+
+            if ((ret = avcodec_open2(v_decoderCtx, codec, NULL)) < 0) 
+            {
                 LOGD("video avcodec_open2() fail %d",ret);
                 releaseSources(&in_fmtCtx,&a_decoderCtx,NULL);
                 return;
@@ -119,25 +120,21 @@ void SoftDecoder::decodeFormat(std::string srcPath)
         }
     }
     
-    LOGD("===begin av_dump_format ==");
-    av_dump_format(in_fmtCtx,0,srcPath.c_str(),0);
-    LOGD("===end av_dump_format===");
+    LOGD("av_dump_format: 打印文件所有流的信息");
+    av_dump_format(in_fmtCtx, 0, srcPath.c_str(), 0);
     
     /** 说明：
      *  1、AVFrame 存储的是未压缩的数据(即解码后的数据)，av_frame_alloc()只创建了AVFframe的引用，并没有分配内存
      *  2、AVPacket 存储的是压缩的数据(即解码前的数据)，av_packet_alloc();只是创建了AVPacket的引用，并没有分配内存
      */
-    AVFrame     *aframe = av_frame_alloc();
-    AVFrame     *vframe = av_frame_alloc();
-    AVPacket    *packet = av_packet_alloc();
-    // av_read_frame()函数每次调用时内部都会为AVPacket分配内存用于存储未压缩音视频数据，所以AVPacket用完
-    // 后要释放掉相应内存
+    AVFrame  *aframe = av_frame_alloc();
+    AVFrame  *vframe = av_frame_alloc();
+    AVPacket *packet = av_packet_alloc();
+    // av_read_frame()函数每次调用时内部都会为AVPacket分配内存用于存储未压缩音视频数据，所以AVPacket用完后要释放掉相应内存
     struct timeval btime;
     struct timeval etime;
-    gettimeofday(&btime, NULL);
+    gettimeofday(&btime,  NULL);
     while (av_read_frame(in_fmtCtx,packet) >= 0) {
-        
-        
         // 根据AVPacket中的stream_index区分对应的是音频数据还是视频数据;
         // 然后将AVPacket送入对应的解码器进行解码
         AVCodecContext *codecCtx = NULL;

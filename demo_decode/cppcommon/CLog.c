@@ -47,7 +47,7 @@ void setDebuglevel(int level)
 // 输出debug 日志
 void LOGD(const char* format,...)
 {
-    if (staticEnableDebug==1 && staticDebugLevel<=staticDebugLevelDebug) {
+    if (staticEnableDebug == 1 && staticDebugLevel<=staticDebugLevelDebug) {
         int len = 200;
         char s[len];
         va_list argp;
