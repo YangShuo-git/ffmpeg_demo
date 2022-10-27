@@ -30,9 +30,10 @@ public:
     void decodeStream(std::string srcPath);
     // 编码yuv为h264
     void encodeAsStream(std::string srcPath,std::string dstPath);
+
+    // 处理解码后的frame
+    void processFrame(AVFrame *frame);
 };
-
-
 
 
 

@@ -24,21 +24,31 @@ static void releaseSources(AVFormatContext **fmtCtx,AVCodecContext **codecCtx1,A
     }
 }
 
-static void decode(AVCodecContext *codecCtx,AVPacket *packet,AVFrame *frame, std::string str)
+static void decode(AVCodecContext *codecCtx, AVPacket *packet, AVFrame *frame, std::string str)
 {
     if (codecCtx == NULL) return;
-    
-    // 由于解码器内部会维护一个缓冲区，所以送入解码器的packet并不是立马就能获取到解码数据，所以这里采取如下机制
+
     int ret = 0;
+
+    // 由于解码器内部会维护一个缓冲区，所以送入解码器的packet并不是立马就能获取到解码数据，所以这里采取如下机制
     avcodec_send_packet(codecCtx,packet);
     while (true) {
         ret = avcodec_receive_frame(codecCtx, frame);
-        // 解码器上下文会有一个解码缓冲区，送入的packet并不是立马能够解码的，如果返回EAGAIN
-        // 则代表正在解码中，需要继续送入packet即可。
-        if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF) {
-//            LOGD("%s avcodec_receive_frame %d",str.c_str(),ret);
+        // 解码器上下文会有一个解码缓冲区，送入的packet并不是立马能够解码的，
+        // 如果返回EAGAIN则代表正在解码中，需要继续送入packet即可  （为什么？）
+        // 如果返回AVERROR_EOF则表明已到达文件尾部
+        if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF) 
+        {
+            LOGD("%s avcodec_receive_frame:EAGAIN %d",str.c_str(),ret);
             return;
-        } else if (ret < 0) {
+        } 
+        else if (ret == AVERROR_EOF)
+        {
+            LOGD("%s avcodec_receive_frame:AVERROR_EOF %d",str.c_str(),ret);
+            return;
+        }
+        else if (ret < 0) 
+        {
             LOGD("%s decodec %d fail",str.c_str(),packet->stream_index,ret);
             return;
         }
@@ -47,6 +57,8 @@ static void decode(AVCodecContext *codecCtx,AVPacket *packet,AVFrame *frame, std
         static int sum=0;
         sum++;
         LOGD("%s decode sucess sum %d",str.c_str(),sum);
+
+        //TODO 生成YUV、PCM
     }
 }
 
@@ -54,8 +66,10 @@ void SoftDecoder::decodeFormat(std::string srcPath)
 {
     // 创建解封装上下文
     AVFormatContext *in_fmtCtx = NULL;
-    AVCodecContext *a_decoderCtx = NULL, *v_decoderCtx = NULL;
-    int a_stream_index = -1, v_stream_index = -1;
+    AVCodecContext *a_decoderCtx = NULL;
+    AVCodecContext *v_decoderCtx = NULL;
+    int a_stream_index = -1;
+    int v_stream_index = -1;
     int ret = 0;
 
     // 打开文件或者网络流
@@ -64,22 +78,24 @@ void SoftDecoder::decodeFormat(std::string srcPath)
         return;
     }
     
-    // 初始化封装相关参数(期间会进行解码尝试)
+    // 查找流信息，并初始化封装相关参数(期间会进行解码尝试)
     if ((ret = avformat_find_stream_info(in_fmtCtx, NULL)) < 0) {
         LOGD("avformat_find_stream_info fail");
         return;
     }
     
-    // 读取文件中对应的音视频流，都只取一路
+    // 打开每一路流的解码器，根据codec_type来判断是哪一路流
+    //问题，这里是三路流，只有i = 0和i =2 的情况
     for (int i = 0; i<in_fmtCtx->nb_streams; i++) 
     {
         AVStream *stream = in_fmtCtx->streams[i];
         enum AVCodecID codeId = stream->codecpar->codec_id;
-        if (stream->codecpar->codec_type == AVMEDIA_TYPE_AUDIO && a_stream_index == -1) 
+
+        if (stream->codecpar->codec_type == AVMEDIA_TYPE_AUDIO &&a_stream_index == -1) 
         {
             a_stream_index = i;
             
-            // 通过该流的的codeId寻找解码器，并创建解码器上下文
+            // 通过该流的的codeId找到解码器，并创建解码器上下文
             AVCodec *codec = avcodec_find_decoder(codeId);
             a_decoderCtx = avcodec_alloc_context3(codec);
             if (a_decoderCtx == NULL) {
@@ -87,15 +103,17 @@ void SoftDecoder::decodeFormat(std::string srcPath)
                 releaseSources(&in_fmtCtx,NULL,NULL);
                 return;
             }
-            // 通过输入流的编码参数来设置解码参数，否则avcodec_open2会失败
+            // 通过入流的解码器参数来设置解码参数，否则avcodec_open2会失败
+            // 这个函数也会传递extradata？ （存疑）
             avcodec_parameters_to_context(a_decoderCtx, stream->codecpar);
 
-            // 打开解码器和解码器上下文
+            // 打开音频解码器和解码器上下文
             if ((ret = avcodec_open2(a_decoderCtx, codec, NULL)) < 0) {
                 LOGD("audio avcodec_open2() fail %d",ret);
-                releaseSources(&in_fmtCtx,NULL,NULL);
+                releaseSources(&in_fmtCtx, NULL, NULL);
                 return;
             }
+            LOGD("a_stream_index index: %d", i);
         }
         
         if (stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO && v_stream_index == -1) 
@@ -117,6 +135,7 @@ void SoftDecoder::decodeFormat(std::string srcPath)
                 releaseSources(&in_fmtCtx,&a_decoderCtx,NULL);
                 return;
             }
+            LOGD("v_decoderCtx index: %d", i);
         }
     }
     
@@ -124,33 +143,33 @@ void SoftDecoder::decodeFormat(std::string srcPath)
     av_dump_format(in_fmtCtx, 0, srcPath.c_str(), 0);
     
     /** 说明：
-     *  1、AVFrame 存储的是未压缩的数据(即解码后的数据)，av_frame_alloc()只创建了AVFframe的引用，并没有分配内存
-     *  2、AVPacket 存储的是压缩的数据(即解码前的数据)，av_packet_alloc();只是创建了AVPacket的引用，并没有分配内存
+     *  1、AVFrame 存储的是未压缩的数据(即解码后的数据)，av_frame_alloc()；只创建了AVFframe的引用，并没有分配内存
+     *  2、AVPacket 存储的是压缩的数据(即解码前的数据)，av_packet_alloc()；只创建了AVPacket的引用，并没有分配内存
      */
     AVFrame  *aframe = av_frame_alloc();
     AVFrame  *vframe = av_frame_alloc();
     AVPacket *packet = av_packet_alloc();
-    // av_read_frame()函数每次调用时内部都会为AVPacket分配内存用于存储未压缩音视频数据，所以AVPacket用完后要释放掉相应内存
     struct timeval btime;
     struct timeval etime;
     gettimeofday(&btime,  NULL);
-    while (av_read_frame(in_fmtCtx,packet) >= 0) {
+
+    // av_read_frame()函数每次调用时内部都会为AVPacket分配内存用于存储未压缩音视频数据，所以AVPacket用完后要释放掉相应内存
+    while (av_read_frame(in_fmtCtx, packet) >= 0) {
         // 根据AVPacket中的stream_index区分对应的是音频数据还是视频数据;
         // 然后将AVPacket送入对应的解码器进行解码
         AVCodecContext *codecCtx = NULL;
         AVFrame        *frame    = NULL;
+
         if (packet->stream_index == a_stream_index) {
             codecCtx = a_decoderCtx;
             frame = aframe;
-            // 只是开启视频的解码
-            continue;
         } else if (packet->stream_index == v_stream_index) {
             codecCtx = v_decoderCtx;
             frame = vframe;
         }
         
         if (codecCtx != NULL) {
-            decode(codecCtx,packet,frame,packet->stream_index == a_stream_index ? "audio":"video");
+            decode(codecCtx, packet, frame, packet->stream_index == a_stream_index ? "audio":"video");
         }
         
         // 释放内存
@@ -158,15 +177,15 @@ void SoftDecoder::decodeFormat(std::string srcPath)
     }
     
     // 刷新缓冲区
-    decode(a_decoderCtx,NULL,aframe,"audio");
-    decode(v_decoderCtx,NULL,vframe,"video");
+    decode(a_decoderCtx, NULL, aframe, "audio");
+    decode(v_decoderCtx, NULL, vframe, "video");
     gettimeofday(&etime, NULL);
     LOGD("解码耗时 %.2f s",(etime.tv_sec - btime.tv_sec)+(etime.tv_usec - btime.tv_usec)/1000000.0f);
 
     releaseSources(&in_fmtCtx, &a_decoderCtx, &v_decoderCtx);
 }
 
-// 为了防止多次调用造成的crash，这里用指针的指针作为参数
+// 为了防止多次调用造成的crash，这里用指针的指针作为参数  （为什么？）
 static void releaseSources2(AVFormatContext **fmtCtx,AVCodecContext **codecCtx,AVCodecParserContext **parserCtx)
 {
     if (fmtCtx && *fmtCtx != NULL) {

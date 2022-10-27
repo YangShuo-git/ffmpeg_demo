@@ -6,7 +6,7 @@ add_subdirectory(cppcommon)
 aux_source_directory(. SRCS_FILE)
 add_executable(demo_decode ${SRCS_FILE})
 
-# target ffmpeg的头文件与库，二者缺一不可
+# target到ffmpeg的头文件与库，二者缺一不可
 target_include_directories(demo_decode PUBLIC ../ffmpeg_build/include)
 target_link_libraries(demo_decode avformat avcodec avutil)
 
