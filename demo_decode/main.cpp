@@ -15,15 +15,14 @@ int main(int argc, const char * argv[]) {
     std::string resourceDir = curFile.substr(0, pos)+"assets/";
     cout << resourceDir << "\n";
     
-    int test_use = 3;
+    int test_use = 8;
     SoftDecoder decoder;
 
     if (test_use == 3) {
         std::string srcPath = resourceDir + "2_audio.mp4";
         decoder.decodeFormat(srcPath);
     } else if (test_use == 8) {
-        std::string srcPath = resourceDir + "test_441_f32le_2.aac";
-        // SoftDecoder decoder;
+        std::string srcPath = resourceDir + "phone.h264";
         decoder.decodeStream(srcPath);
     } else if (test_use == 9) {
         std::string srcPath = resourceDir + "test_640x360_yuv420p.yuv";

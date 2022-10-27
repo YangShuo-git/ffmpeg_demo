@@ -35,7 +35,7 @@ static void decode(AVCodecContext *codecCtx, AVPacket *packet, AVFrame *frame, s
     while (true) {
         ret = avcodec_receive_frame(codecCtx, frame);
         // 解码器上下文会有一个解码缓冲区，送入的packet并不是立马能够解码的，
-        // 如果返回EAGAIN则代表正在解码中，需要继续送入packet即可  （为什么？）
+        // 如果返回EAGAIN则代表正在解码中，需要继续送入packet即可 （为什么？）
         // 如果返回AVERROR_EOF则表明已到达文件尾部
         if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF) 
         {
@@ -72,26 +72,26 @@ void SoftDecoder::decodeFormat(std::string srcPath)
     int v_stream_index = -1;
     int ret = 0;
 
-    // 打开文件或者网络流
+    // 打开文件或者网络流  重要的操作是把流存解入封装上下文中
     if ((ret = avformat_open_input(&in_fmtCtx, srcPath.c_str(), NULL, NULL)) < 0) {
         LOGD("avformat_open_input fail %d", ret);
         return;
     }
     
-    // 查找流信息，并初始化封装相关参数(期间会进行解码尝试)
+    // 查找流信息，并初始化解封装上下文的相关参数(期间会进行解码尝试) 
     if ((ret = avformat_find_stream_info(in_fmtCtx, NULL)) < 0) {
         LOGD("avformat_find_stream_info fail");
         return;
     }
     
-    // 打开每一路流的解码器，根据codec_type来判断是哪一路流
-    //问题，这里是三路流，只有i = 0和i =2 的情况
+    // 打开流的解码器，如何判断是哪一路流，根据stream->codecpar->codec_type
+    // 问题，如果是三路流，则只有i=0和i=2，如何解决？（目前的代码是只取出音视频各自的第一路流）
     for (int i = 0; i<in_fmtCtx->nb_streams; i++) 
     {
         AVStream *stream = in_fmtCtx->streams[i];
         enum AVCodecID codeId = stream->codecpar->codec_id;
 
-        if (stream->codecpar->codec_type == AVMEDIA_TYPE_AUDIO &&a_stream_index == -1) 
+        if (stream->codecpar->codec_type == AVMEDIA_TYPE_AUDIO && a_stream_index == -1) 
         {
             a_stream_index = i;
             
@@ -103,11 +103,11 @@ void SoftDecoder::decodeFormat(std::string srcPath)
                 releaseSources(&in_fmtCtx,NULL,NULL);
                 return;
             }
-            // 通过入流的解码器参数来设置解码参数，否则avcodec_open2会失败
-            // 这个函数也会传递extradata？ （存疑）
+            // 配置解码器上下文，否则avcodec_open2会失败，来源是流的解码器参数（stream->codecpar）
+            // 重要的参数是extradata
             avcodec_parameters_to_context(a_decoderCtx, stream->codecpar);
 
-            // 打开音频解码器和解码器上下文
+            // 打开解码器，并关联解码器上下文
             if ((ret = avcodec_open2(a_decoderCtx, codec, NULL)) < 0) {
                 LOGD("audio avcodec_open2() fail %d",ret);
                 releaseSources(&in_fmtCtx, NULL, NULL);
@@ -142,10 +142,8 @@ void SoftDecoder::decodeFormat(std::string srcPath)
     LOGD("av_dump_format: 打印文件所有流的信息");
     av_dump_format(in_fmtCtx, 0, srcPath.c_str(), 0);
     
-    /** 说明：
-     *  1、AVFrame 存储的是未压缩的数据(即解码后的数据)，av_frame_alloc()；只创建了AVFframe的引用，并没有分配内存
-     *  2、AVPacket 存储的是压缩的数据(即解码前的数据)，av_packet_alloc()；只创建了AVPacket的引用，并没有分配内存
-     */
+    /////////////////////////////////////////////////////////////////////////////////////////
+    //解码流程
     AVFrame  *aframe = av_frame_alloc();
     AVFrame  *vframe = av_frame_alloc();
     AVPacket *packet = av_packet_alloc();
@@ -153,7 +151,8 @@ void SoftDecoder::decodeFormat(std::string srcPath)
     struct timeval etime;
     gettimeofday(&btime,  NULL);
 
-    // av_read_frame()函数每次调用时内部都会为AVPacket分配内存用于存储未压缩音视频数据，所以AVPacket用完后要释放掉相应内存
+    // av_read_frame()函数每次调用时内部都会为AVPacket分配内存用于存储未压缩音视频数据，
+    // 所以AVPacket用完后要释放掉相应内存
     while (av_read_frame(in_fmtCtx, packet) >= 0) {
         // 根据AVPacket中的stream_index区分对应的是音频数据还是视频数据;
         // 然后将AVPacket送入对应的解码器进行解码
@@ -176,7 +175,7 @@ void SoftDecoder::decodeFormat(std::string srcPath)
         av_packet_unref(packet);
     }
     
-    // 刷新缓冲区
+    // 刷新缓冲区 
     decode(a_decoderCtx, NULL, aframe, "audio");
     decode(v_decoderCtx, NULL, vframe, "video");
     gettimeofday(&etime, NULL);
@@ -206,17 +205,15 @@ static void releaseSources2(AVFormatContext **fmtCtx,AVCodecContext **codecCtx,A
 
 void SoftDecoder::decodeStream(std::string srcPath)
 {
-    /** 遇到问题：解析本地MP4或者MP3等文件时失败
-     *  分析原因：av_parser_parser2()只适合解析aac流,h264流(这种流一般用于网络播放时，比如基于RTSP，RTMP协议的)，并不
-     *  适合本地MP4直接读取后的解析(本地得还得用AVFormatContext解封装)
-     */
+    // av_parser_parser2()只适合解析裸流：aac流,h264流(这种流一般用于网络播放时，比如基于RTSP，RTMP协议的)，
+    // 并不适合本地MP4直接读取后的解析(本地文件还得用AVFormatContext解封装)
     FILE *in_file = NULL;
-    uint8_t in_buff[Parser_Buffer_Size+AV_INPUT_BUFFER_PADDING_SIZE];
+    uint8_t in_buff[Parser_Buffer_Size + AV_INPUT_BUFFER_PADDING_SIZE];
     uint8_t *data = NULL;
-    bool isAudio = true;
     int data_size;
     data = in_buff;
     data_size = Parser_Buffer_Size;
+    bool isAudio = true;
     
     if ((in_file = fopen(srcPath.c_str(), "rb")) == NULL){
         LOGD("fopen fail");
@@ -227,6 +224,8 @@ void SoftDecoder::decodeStream(std::string srcPath)
     AVCodecContext *decoderCtx = NULL;
     AVCodecParserContext *parserCtx = NULL;
     AVCodec *codec = NULL;
+
+    // 进一步理解解封装上下文是用来存放流的
     if (avformat_open_input(&fmt_Ctx, srcPath.c_str(), NULL, NULL) < 0) {
         LOGD("avformat_open_input fail");
         return;
@@ -237,14 +236,16 @@ void SoftDecoder::decodeStream(std::string srcPath)
     decoderCtx = avcodec_alloc_context3(codec);
     if (decoderCtx == NULL) {
         LOGD("avcodec_alloc_context3 fail");
-        releaseSources2(&fmt_Ctx,NULL, NULL);
+        releaseSources2(&fmt_Ctx, NULL, NULL);
         return;
     }
-    if (avcodec_open2(decoderCtx,codec,NULL) < 0) {
+    if (avcodec_open2(decoderCtx, codec, NULL) < 0) {
         LOGD("avcodec_open2 fail");
         releaseSources2(&fmt_Ctx,NULL, NULL);
         return;
     }
+
+    //创建解析器  用于解码裸流
     parserCtx = av_parser_init(codeId);
     if (parserCtx == NULL) {
         LOGD("av_parser_init fail");
@@ -262,6 +263,7 @@ void SoftDecoder::decodeStream(std::string srcPath)
         }
         
         while (data_size > 0) {
+            // 解析裸流，将data分割成独立的packet
             int len = av_parser_parse2(parserCtx, decoderCtx, &packet->data, &packet->size, data, data_size, AV_NOPTS_VALUE, AV_NOPTS_VALUE, 0);
             if (len < 0) {
                 LOGD("av_parser_parser2() fail %d",len);
