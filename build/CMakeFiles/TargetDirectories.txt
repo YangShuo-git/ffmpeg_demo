@@ -1,9 +1,0 @@
-/home/yangshuo/Desktop/ffmpeg_demo/build/CMakeFiles/rebuild_cache.dir
-/home/yangshuo/Desktop/ffmpeg_demo/build/CMakeFiles/edit_cache.dir
-/home/yangshuo/Desktop/ffmpeg_demo/build/CMakeFiles/ffmpeg_demo.dir
-/home/yangshuo/Desktop/ffmpeg_demo/build/demo_decode/CMakeFiles/rebuild_cache.dir
-/home/yangshuo/Desktop/ffmpeg_demo/build/demo_decode/CMakeFiles/edit_cache.dir
-/home/yangshuo/Desktop/ffmpeg_demo/build/demo_decode/CMakeFiles/demo_decode.dir
-/home/yangshuo/Desktop/ffmpeg_demo/build/demo_decode/cppcommon/CMakeFiles/rebuild_cache.dir
-/home/yangshuo/Desktop/ffmpeg_demo/build/demo_decode/cppcommon/CMakeFiles/edit_cache.dir
-/home/yangshuo/Desktop/ffmpeg_demo/build/demo_decode/cppcommon/CMakeFiles/common.dir

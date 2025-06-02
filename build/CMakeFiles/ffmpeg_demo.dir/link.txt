@@ -1,1 +1,0 @@
-/usr/bin/c++   -std=c++0x  -O0 -Wall -g -ggdb   CMakeFiles/ffmpeg_demo.dir/main.cpp.o  -o ffmpeg_demo   -L/home/yangshuo/Desktop/ffmpeg_demo/ffmpeg_build/lib  -Wl,-rpath,/home/yangshuo/Desktop/ffmpeg_demo/ffmpeg_build/lib -lavformat 

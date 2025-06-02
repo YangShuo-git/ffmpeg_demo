@@ -17,6 +17,8 @@ link_directories("ffmpeg_build/lib")
 
 add_subdirectory(demo_decode)
 
-add_executable(${PROJECT_NAME} ${SRCS_DIR})
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/ffmpeg_build/include)
-target_link_libraries(${PROJECT_NAME} avformat)
+add_subdirectory(demo_simple)
+
+# add_executable(${PROJECT_NAME} ${SRCS_DIR})
+# target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/ffmpeg_build/include)
+# target_link_libraries(${PROJECT_NAME} avformat)
