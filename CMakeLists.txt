@@ -15,9 +15,9 @@ aux_source_directory(. SRCS_DIR)
 # 以后推荐使用这种方式来链接库：先引入库的目录，后面可以直接target库的名字
 link_directories("ffmpeg_build/lib")
 
-add_subdirectory(demo_decode)
+# add_subdirectory(demo_decode)
 
-add_subdirectory(demo_simple)
+# add_subdirectory(demo_simple)
 
 add_subdirectory(demo_muxer)
 
