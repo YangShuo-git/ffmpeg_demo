@@ -33,7 +33,7 @@ typedef struct AAC_CONFIGURE
 class Muxer
 {
 public:
-    static Muxer* GetInstance();
+    static Muxer* getInstance();
 
     bool startRecordWithFilePath(const char* file);
     void stopRecordReleaseAllResources();
@@ -98,22 +98,22 @@ private:
     bool    writeFrame(AVPacket* pkt);
 
     bool    writeVideoHeader();
-    bool    writeMp4FileTrail();
+    bool    writeMp4FileTail();
 
     void    releaseAllRecordResources();
 
     AACEncodeConfig* initAudioEncodeConfiguration();
-    void ReleaseAccConfiguration();
+    void releaseAccConfiguration();
     int linearPCM2AAC(unsigned char * pData,int captureSize);
 
     //获取不断增长的时间ms，用于设置PTS
-    unsigned long GetTickCount();
+    unsigned long getTickCount();
 
 private:
     Muxer();
 
-    static Muxer*  m_pInstance;
-    static pthread_mutex_t m_mutex;
+    static Muxer* m_pInstance;
+    static pthread_mutex_t m_InstanceMutex;
 
     //回收单例资源
     class Garbage{
