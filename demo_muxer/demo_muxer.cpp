@@ -30,7 +30,7 @@ Muxer::Muxer()
 }
 
 
-bool Muxer::startRecordWithFilePath(const char* file)
+bool Muxer::startRecord(const char* file)
 {
     if(file == NULL){
         return false;
@@ -54,10 +54,10 @@ bool Muxer::startRecordWithFilePath(const char* file)
     //TODO
 
     //3.写文件头
-    if(!writeVideoHeader()){
-        writeMp4FileTail();
+    if(!writeFileHeader()){
+        writeFileTail();
 
-        releaseAllRecordResources();
+        releaseResources();
         cout<<"write video header failed!"<<endl;
         return false;
     }
@@ -68,15 +68,15 @@ bool Muxer::startRecordWithFilePath(const char* file)
     return true;
 }
 
-void Muxer::stopRecordReleaseAllResources()
+void Muxer::stopRecord()
 {
     m_bRecording = false;
 
-    writeMp4FileTail();
-    releaseAllRecordResources();
+    writeFileTail();
+    releaseResources();
 }
 
-void Muxer::releaseAllRecordResources()
+void Muxer::releaseResources()
 {
     if(m_pAudioCodecCtx != NULL){
         avcodec_free_context(&m_pAudioCodecCtx);
@@ -92,7 +92,7 @@ void Muxer::releaseAllRecordResources()
     }
 }
 
-bool Muxer::writeVideoHeader()
+bool Muxer::writeFileHeader()
 {
     if(!m_pFormatCtx){
         return false;
@@ -114,7 +114,7 @@ bool Muxer::writeVideoHeader()
     return true;
 }
 
-bool Muxer::writeMp4FileTail()
+bool Muxer::writeFileTail()
 {
     if(!m_pFormatCtx){
         return false;

@@ -35,8 +35,8 @@ class Muxer
 public:
     static Muxer* getInstance();
 
-    bool startRecordWithFilePath(const char* file);
-    void stopRecordReleaseAllResources();
+    bool startRecord(const char* file);
+    void stopRecord();
 
     void setupInputResolution(int w, int h)   { m_videoInWidth = w; m_videoInHeight = h;     }
     void setupOutputResolution(int w, int h)  { m_videoOutWidth = w; m_videoOutHeight = h;   }
@@ -97,10 +97,10 @@ private:
 
     bool    writeFrame(AVPacket* pkt);
 
-    bool    writeVideoHeader();
-    bool    writeMp4FileTail();
+    bool    writeFileHeader();
+    bool    writeFileTail();
 
-    void    releaseAllRecordResources();
+    void    releaseResources();
 
     AACEncodeConfig* initAudioEncodeConfiguration();
     void releaseAccConfiguration();
