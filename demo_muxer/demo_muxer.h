@@ -4,7 +4,7 @@
 extern "C"
 {
 #include <libavformat/avformat.h>
-// #include <libavdevice/avdevice.h>
+#include <libavdevice/avdevice.h>
 #include <libavutil/avutil.h>
 #include <libswresample/swresample.h>
 #include <libavcodec/avcodec.h>

@@ -50,8 +50,9 @@ bool Muxer::startRecord(const char* file)
         return false;
     }
 
-    //2.写Video、audio码流
-    //TODO
+    //2.添加Video、audio码流
+    addVideoStream();
+    addAudioStream();
 
     //3.写文件头
     if(!writeFileHeader()){
@@ -132,7 +133,117 @@ bool Muxer::writeFileTail()
 
     cout <<"Write file tail success !"<<endl;
     return true;
+}
+
+bool Muxer::addVideoStream()
+{
+    if(m_pFormatCtx == NULL){
+        return false;
+    }
+
+    AVCodec* codec = avcodec_find_encoder(AV_CODEC_ID_H264);
+    if(!codec){
+        cout <<"avcodec_find_encoder AV_CODEC_ID_H264 failed!"<<endl;
+        return false;
+    }
+
+    m_pVideoCodecCtx = avcodec_alloc_context3(codec);
+    if(!m_pVideoCodecCtx){
+        cout <<"video avcodec_alloc_context3 failed!"<<endl;
+        return false;
+    }
+
+    m_pVideoCodecCtx->width    = m_videoOutWidth;
+    m_pVideoCodecCtx->height   = m_videoOutHeight;
+    m_pVideoCodecCtx->pix_fmt  = AV_PIX_FMT_YUV420P;
+    m_pVideoCodecCtx->codec_id = AV_CODEC_ID_H264;
+
+    m_pVideoCodecCtx->time_base = (AVRational){1,30}; //codec的时间基和帧率基本一致 
+    m_pVideoCodecCtx->gop_size  = 20; //20帧一个关键帧
+    m_pVideoCodecCtx->max_b_frames = 0; //b帧为0
+    m_pVideoCodecCtx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER; //全局头，不是每帧都有头
+
+    //设置编码相关的参数,需要avdevice.h
+    av_opt_set(m_pVideoCodecCtx->priv_data, "preset", "superfast", 0); 
     
+
+    int ret = avcodec_open2(m_pVideoCodecCtx, codec, NULL);
+    if(ret != 0){
+        avcodec_free_context(&m_pVideoCodecCtx);
+        cout <<"video avcodec_open2 failed!"<<endl;
+        return;
+    }
+
+    //最终目标是new stream 并填充该流的codecpar
+    m_pVideoStream = avformat_new_stream(m_pFormatCtx, NULL);
+    if(!m_pVideoStream){
+        cout <<"avformat_new_stream failed!"<<endl;
+        return;
+    }
+    m_pVideoStream->codecpar->codec_tag = 0;//默认值为0，直接由CodecId决定
+    avcodec_parameters_from_context(m_pVideoStream->codecpar, m_pVideoCodecCtx);
+
+    //编码需要用到的yuv frame
+    if(m_pYUVFrame == NULL){
+        m_pYUVFrame = av_frame_alloc();
+
+        m_pYUVFrame->pts = 0;
+        m_pYUVFrame->width  = m_videoOutWidth;
+        m_pYUVFrame->height = m_videoOutHeight;
+        m_pYUVFrame->format = AV_PIX_FMT_YUV420P;
+
+        //32字节对齐充分利用现代CPU的AVX/AVX2指令集，兼容所有主流SIMD指令
+        //获得最佳的视频处理性能，符合FFmpeg的最佳实践
+        int ret = av_frame_get_buffer(m_pYUVFrame, 32);
+        if(ret != 0){
+            cout <<"av_frame_get_buffer failed!"<<endl;
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool Muxer::addAudioStream()
+{
+    if(m_pFormatCtx == NULL){
+        return false;
+    }
+
+    AVCodec* codec = avcodec_find_encoder(AV_CODEC_ID_AAC);
+    if(!codec){
+        cout <<"avcodec_find_encoder AV_CODEC_ID_AAC failed!"<<endl;
+        return false;
+    }
+
+    m_pAudioCodecCtx = avcodec_alloc_context3(codec);
+    if(!m_pAudioCodecCtx){
+        cout <<"audio avcodec_alloc_context3 failed!"<<endl;
+        return false;
+    }
+
+    m_pAudioCodecCtx->channels    = m_audioOutChannels;
+    m_pAudioCodecCtx->sample_rate = m_audioOutSamplerate;
+    m_pAudioCodecCtx->sample_fmt  = AV_SAMPLE_FMT_FLTP;
+    m_pAudioCodecCtx->channel_layout = av_get_default_channel_layout(m_audioOutChannels);
+    m_pAudioCodecCtx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+
+    int ret = avcodec_open2(m_pAudioCodecCtx, codec, NULL);
+    if(ret != 0){
+        avcodec_free_context(&m_pAudioCodecCtx);
+        cout <<"audio avcodec_open2 failed!"<<endl;
+        return false;
+    }
+
+    m_pAudioStream = avformat_new_stream(m_pFormatCtx, NULL);
+    if(!m_pAudioStream){
+        cout<<"audio avformat_new_stream failed"<<endl;
+        return false;
+    }
+    m_pAudioStream->codecpar->codec_tag =0;
+    avcodec_parameters_from_context(m_pAudioStream->codecpar, m_pAudioCodecCtx);
+    
+    return true;
 }
 
 
