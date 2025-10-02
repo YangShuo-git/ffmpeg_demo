@@ -246,6 +246,30 @@ bool Muxer::addAudioStream()
     return true;
 }
 
+bool Muxer::writeFrame(AVPacket* pkt)
+{
+    if(!m_bRecording){
+        return false;
+    }
+    if(!m_pFormatCtx || !pkt || pkt->size <= 0){
+        return false;
+    }
+    if(pkt->data == NULL){
+        return false;
+    }
+
+    pthread_mutex_lock(&m_videoWriteMutex);
+    int retValue= av_interleaved_write_frame(m_pFormatCtx, pkt);
+    pthread_mutex_unlock(&m_videoWriteMutex);
+    if(retValue != 0){
+        cout << "av_interleaved_write_frame failed!"<<endl;
+        return false;
+    }
+
+    return true;
+}
+
+
 
 ////////////////////////////////////////////////
 unsigned long Muxer::getTickCount()
