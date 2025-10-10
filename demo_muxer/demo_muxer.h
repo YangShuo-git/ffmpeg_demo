@@ -12,7 +12,7 @@ extern "C"
 
 #include <pthread.h>
 #include <iostream>
-// #include "faac.h"  //ffmpeg3.0以后可能没有这个
+#include "faac.h"  //ffmpeg3.0以后可能没有这个
 
 using namespace std;
 

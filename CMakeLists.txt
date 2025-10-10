@@ -15,6 +15,9 @@ aux_source_directory(. SRCS_DIR)
 # 以后推荐使用这种方式来链接库：先引入库的目录，后面可以直接target库的名字
 link_directories("3rdparty/ffmpeg_build/lib")
 link_directories("3rdparty/libyuv/lib")
+link_directories("3rdparty/libx264/lib")
+link_directories("3rdparty/libfaac/lib")
+link_directories("3rdparty/libfdk-aac/lib")
 
 # add_subdirectory(demo_decode)
 
