@@ -1,4 +1,5 @@
 #include "demo_muxer.h"
+#include "libyuv.h"
 #include <sys/time.h>
 
 Muxer*  Muxer::m_pInstance = NULL;
@@ -171,14 +172,14 @@ bool Muxer::addVideoStream()
     if(ret != 0){
         avcodec_free_context(&m_pVideoCodecCtx);
         cout <<"video avcodec_open2 failed!"<<endl;
-        return;
+        return false;
     }
 
     //最终目标是new stream 并填充该流的codecpar
     m_pVideoStream = avformat_new_stream(m_pFormatCtx, NULL);
     if(!m_pVideoStream){
         cout <<"avformat_new_stream failed!"<<endl;
-        return;
+        return false;
     }
     m_pVideoStream->codecpar->codec_tag = 0;//默认值为0，直接由CodecId决定
     avcodec_parameters_from_context(m_pVideoStream->codecpar, m_pVideoCodecCtx);

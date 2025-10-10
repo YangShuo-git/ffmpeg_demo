@@ -1,10 +1,10 @@
 cd ffmpeg-4.2.1
 
-./configure  --prefix="$HOME/ffmpeg_demo/ffmpeg_build"   \
---extra-cflags="-I$HOME/ffmpeg_demo/ffmpeg_build/include" \
---extra-ldflags="-L$HOME/ffmpeg_demo/ffmpeg_build/lib" \
+./configure  --prefix="$HOME/ffmpeg_demo/3rdparty/ffmpeg_build"   \
+--extra-cflags="-I$HOME/ffmpeg_demo/3rdparty/ffmpeg_build/include" \
+--extra-ldflags="-L$HOME/ffmpeg_demo/3rdparty/ffmpeg_build/lib" \
 --extra-libs="-lpthread -lm" \
---bindir="$HOME/ffmpeg_demo/ffmpeg_build/bin" \
+--bindir="$HOME/ffmpeg_demo/3rdparty/ffmpeg_build/bin" \
 --enable-shared \
 --enable-gpl \
 --enable-pic \

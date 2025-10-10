@@ -13,13 +13,16 @@ aux_source_directory(. SRCS_DIR)
 
 # 增加链接库的目录，否则下面就不能直接使用avformat(而是需要加入对应的路径)
 # 以后推荐使用这种方式来链接库：先引入库的目录，后面可以直接target库的名字
-link_directories("ffmpeg_build/lib")
+link_directories("3rdparty/ffmpeg_build/lib")
+link_directories("3rdparty/libyuv/lib")
 
 # add_subdirectory(demo_decode)
 
 # add_subdirectory(demo_simple)
 
 add_subdirectory(demo_muxer)
+
+
 
 # add_executable(${PROJECT_NAME} ${SRCS_DIR})
 # target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/ffmpeg_build/include)

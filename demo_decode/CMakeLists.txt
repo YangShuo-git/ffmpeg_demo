@@ -7,7 +7,7 @@ aux_source_directory(. SRCS_FILE)
 add_executable(demo_decode ${SRCS_FILE})
 
 # target到ffmpeg的头文件与库，二者缺一不可
-target_include_directories(demo_decode PUBLIC ../ffmpeg_build/include)
+target_include_directories(demo_decode PUBLIC ../3rdparty/ffmpeg_build/include)
 target_link_libraries(demo_decode avformat avcodec avutil)
 
 # 增加依赖库：common(另外一个文件夹也想使用common库，应该怎么办呢？)
