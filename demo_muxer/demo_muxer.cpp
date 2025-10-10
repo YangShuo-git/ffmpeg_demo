@@ -59,7 +59,7 @@ bool Muxer::startRecord(const char* file)
     if(!writeFileHeader()){
         writeFileTail();
 
-        releaseResources();
+        releaseRecordResources();
         cout<<"write video header failed!"<<endl;
         return false;
     }
@@ -75,10 +75,10 @@ void Muxer::stopRecord()
     m_bRecording = false;
 
     writeFileTail();
-    releaseResources();
+    releaseRecordResources();
 }
 
-void Muxer::releaseResources()
+void Muxer::releaseRecordResources()
 {
     if(m_pAudioCodecCtx != NULL){
         avcodec_free_context(&m_pAudioCodecCtx);
@@ -270,6 +270,91 @@ bool Muxer::writeFrame(AVPacket* pkt)
     return true;
 }
 
+bool Muxer::writeVideoFrameWithRgbData(unsigned char* rgb)
+{
+    if(!m_bRecording){
+        return false;
+    }
+    if(!m_pFormatCtx || !m_pYUVFrame || !rgb){
+        return false;
+    }
+
+    int t_width  = m_videoInWidth;
+    int t_height = m_videoInHeight;
+
+    int rgbStride = m_videoInWidth * 4;
+    int whSize    = t_width * t_height;
+    int uv_stride = t_width / 2;
+    int uv_length = uv_stride * (t_height/2);
+
+    uint8_t* yuvBuffer = (uint8_t*)malloc(whSize * 3 / 2);
+
+    uint8_t* Y_data_Ptr = yuvBuffer;
+    uint8_t* U_data_ptr = yuvBuffer + whSize;
+    uint8_t* V_data_ptr = yuvBuffer + whSize + uv_length;
+
+    libyuv::BGRAToI420((uint8_t*)rgb, rgbStride, 
+                                Y_data_Ptr, t_width, 
+                                U_data_ptr, uv_stride, 
+                                V_data_ptr, uv_stride, 
+                                t_width, t_height);
+
+    m_pYUVFrame->data[0] = Y_data_Ptr;
+    m_pYUVFrame->data[1] = U_data_ptr;
+    m_pYUVFrame->data[2] = V_data_ptr;
+
+    m_pYUVFrame->linesize[0] = t_width;
+    m_pYUVFrame->linesize[1] = uv_stride;
+    m_pYUVFrame->linesize[2] = uv_stride;
+
+    //1、设置frame的pts
+    unsigned long currentPts = getTickCount() - m_startTimeStamp;
+    if(currentPts <=0){
+        currentPts +=1;
+    }
+    m_pYUVFrame->pts = currentPts;
+
+    //2、编码
+    int ret = avcodec_send_frame(m_pVideoCodecCtx, m_pYUVFrame);
+    if(ret != 0){
+        if(yuvBuffer != NULL){
+            free(yuvBuffer);
+            yuvBuffer = NULL;
+        }
+        return false;
+    }
+
+    //处理退出的情况
+    if(!m_bRecording || !m_pFormatCtx || !m_pYUVFrame){
+        return false;
+    }
+
+    AVPacket packet;
+    av_init_packet(&packet);
+    ret = avcodec_receive_packet(m_pVideoCodecCtx, &packet);
+    if(ret !=0 || packet.size <= 0){
+       if(yuvBuffer != NULL){
+            free(yuvBuffer);
+            yuvBuffer = NULL;
+        }
+        return false;     
+    }
+
+    if(yuvBuffer != NULL){
+        free(yuvBuffer);
+        yuvBuffer = NULL;
+    }
+
+    //3、转换时间基：frame timebase --> stream timebase
+    av_packet_rescale_ts(&packet, m_pVideoCodecCtx->time_base, m_pVideoStream->time_base);
+    //4、设置流索引
+    packet.stream_index = m_pVideoStream->index;
+
+    //5、写入mp4
+    writeFrame(&packet);
+
+    return true;
+}
 
 
 ////////////////////////////////////////////////

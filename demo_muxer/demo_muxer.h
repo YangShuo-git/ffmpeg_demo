@@ -100,7 +100,7 @@ private:
     bool    writeFileHeader();
     bool    writeFileTail();
 
-    void    releaseResources();
+    void    releaseRecordResources();
 
     AACEncodeConfig* initAudioEncodeConfiguration();
     void releaseAccConfiguration();
