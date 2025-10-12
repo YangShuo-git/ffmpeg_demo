@@ -12,15 +12,15 @@ extern "C"
 
 #include <pthread.h>
 #include <iostream>
-#include "faac.h"  //ffmpeg3.0以后可能没有这个
+#include "faac.h"
 
 using namespace std;
 
 typedef struct AAC_CONFIGURE
 {
-    // faacEncHandle hEncoder;            //音频文件描述符
+    faacEncHandle hEncoder;            //音频文件描述符
 
-    unsigned int nSampleRate;          //音频采样数
+    unsigned int nSampleRate;          //音频采样率
     unsigned int nChannels;  	       //音频声道数
     unsigned int nPCMBitSize;          //音频采样精度
 
@@ -58,7 +58,7 @@ private:
     int m_audioOutSamplerate = 44100;
     int m_audioOutChannels   = 2;
 
-    int m_samples = 960; //输入输出的每帧数据每通道的样本数
+    int m_samples = 960; //输入输出的每帧数据每通道的样本数 试试1024
 
     int m_audioFramePts = 0;
     int m_videoFramePts = 0;

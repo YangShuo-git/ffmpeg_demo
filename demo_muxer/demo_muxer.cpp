@@ -28,6 +28,7 @@ Muxer::Muxer()
     pthread_mutex_init(&m_aacWriterMutex, 0);
 
     m_startTimeStamp = 0;
+    m_aacEncodeConfig = initAudioEncodeConfiguration();
 }
 
 
@@ -44,7 +45,7 @@ bool Muxer::startRecord(const char* file)
 
     m_filePath = file;
 
-    //1.创建output Format
+    //1.创建output Format Context
     avformat_alloc_output_context2(&m_pFormatCtx, NULL, NULL, file);
     if(m_pFormatCtx == NULL){
         cout<<"avformat_alloc_output_context2 failed!"<<endl;
@@ -100,7 +101,7 @@ bool Muxer::writeFileHeader()
         return false;
     }
 
-    // IO文件句柄
+    // IO文件句柄：m_pFormatCtx->pb
     int ret = avio_open(&m_pFormatCtx->pb, m_filePath.c_str(), AVIO_FLAG_WRITE);
     if(ret != 0){
         cout << "avio_open failed!"<<endl;
@@ -142,12 +143,14 @@ bool Muxer::addVideoStream()
         return false;
     }
 
+//////////////////////////////////////////////////////////////////////////
     AVCodec* codec = avcodec_find_encoder(AV_CODEC_ID_H264);
     if(!codec){
         cout <<"avcodec_find_encoder AV_CODEC_ID_H264 failed!"<<endl;
         return false;
     }
 
+    //根据Codec创建CodecCtx
     m_pVideoCodecCtx = avcodec_alloc_context3(codec);
     if(!m_pVideoCodecCtx){
         cout <<"video avcodec_alloc_context3 failed!"<<endl;
@@ -160,29 +163,31 @@ bool Muxer::addVideoStream()
     m_pVideoCodecCtx->codec_id = AV_CODEC_ID_H264;
 
     m_pVideoCodecCtx->time_base = (AVRational){1,30}; //codec的时间基和帧率基本一致 
-    m_pVideoCodecCtx->gop_size  = 20; //20帧一个关键帧
+    m_pVideoCodecCtx->gop_size  = 20;   //20帧一个关键帧
     m_pVideoCodecCtx->max_b_frames = 0; //b帧为0
     m_pVideoCodecCtx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER; //全局头，不是每帧都有头
 
     //设置编码相关的参数,需要avdevice.h
     av_opt_set(m_pVideoCodecCtx->priv_data, "preset", "superfast", 0); 
     
-
+    //打开解码器：需要Codec与CodecCtx
     int ret = avcodec_open2(m_pVideoCodecCtx, codec, NULL);
     if(ret != 0){
         avcodec_free_context(&m_pVideoCodecCtx);
         cout <<"video avcodec_open2 failed!"<<endl;
         return false;
     }
+//////////////////////////////////////////////////////////////////////////
 
-    //最终目标是new stream 并填充该流的codecpar
+    //最终目标是avformat_new_stream，并填充该流的codecpar
     m_pVideoStream = avformat_new_stream(m_pFormatCtx, NULL);
     if(!m_pVideoStream){
         cout <<"avformat_new_stream failed!"<<endl;
         return false;
     }
-    m_pVideoStream->codecpar->codec_tag = 0;//默认值为0，直接由CodecId决定
     avcodec_parameters_from_context(m_pVideoStream->codecpar, m_pVideoCodecCtx);
+    m_pVideoStream->codecpar->codec_tag = 0;//默认值为0，直接由CodecId决定
+
 
     //编码需要用到的yuv frame
     if(m_pYUVFrame == NULL){
@@ -345,10 +350,10 @@ bool Muxer::writeVideoFrameWithRgbData(unsigned char* rgb)
         yuvBuffer = NULL;
     }
 
-    //3、转换时间基：frame timebase --> stream timebase
-    av_packet_rescale_ts(&packet, m_pVideoCodecCtx->time_base, m_pVideoStream->time_base);
-    //4、设置流索引
+    //3、设置流索引
     packet.stream_index = m_pVideoStream->index;
+    //4、转换时间基：frame timebase --> stream timebase
+    av_packet_rescale_ts(&packet, m_pVideoCodecCtx->time_base, m_pVideoStream->time_base);
 
     //5、写入mp4
     writeFrame(&packet);
@@ -356,6 +361,138 @@ bool Muxer::writeVideoFrameWithRgbData(unsigned char* rgb)
     return true;
 }
 
+bool Muxer::writeAudioFrameWithPcmData(unsigned char* data, int size)
+{
+    if(!m_bRecording){
+        return false;
+    }
+
+    linearPCM2AAC(data,size);
+    return true;
+}
+
+//可以用ring buffer优化
+//攒够一定数据才会送去编码
+int Muxer::linearPCM2AAC(unsigned char * pData, int captureSize)
+{
+    if(!m_bRecording){
+        return -1;
+    }
+
+    if(pData==NULL){
+        return -1;
+    }
+
+    if(( captureSize > m_pcmBufferSize ) || (captureSize <= 0)){
+        return -1;
+    }
+
+    int nRet = 0;
+    int copyLength = 0;
+
+    if(m_pcmBufferRemainSize > captureSize){
+        copyLength = captureSize;
+    } else{
+        copyLength = m_pcmBufferRemainSize;
+    }
+
+    memcpy((&m_aacEncodeConfig->pcmBuffer[0]) + m_pcmWriteRemainSize, pData, copyLength);
+    m_pcmBufferRemainSize -= copyLength;
+    m_pcmWriteRemainSize += copyLength;
+
+    if(m_pcmBufferRemainSize > 0){
+        return 0;
+    }
+
+    pthread_mutex_lock(&m_aacWriterMutex);
+    nRet = faacEncEncode(m_aacEncodeConfig->hEncoder,
+                            (int*)(m_aacEncodeConfig->pcmBuffer),
+                            m_aacEncodeConfig->nInputSamples,
+                            m_aacEncodeConfig->aacBuffer,
+                            m_aacEncodeConfig->nMaxOutputBytes);
+    pthread_mutex_unlock(&m_aacWriterMutex);
+
+    memset(m_aacEncodeConfig->pcmBuffer, 0, m_pcmBufferSize);
+    m_pcmWriteRemainSize = 0;
+    m_pcmBufferRemainSize = m_pcmBufferSize;
+
+
+    AVPacket pkt;
+    av_init_packet(&pkt);
+
+    pkt.stream_index = m_pAudioStream->index; //音频流的索引
+    pkt.data = m_aacEncodeConfig->aacBuffer;
+    pkt.size = nRet;
+    pkt.pts  = m_audioFramePts;
+    pkt.dts  = pkt.pts;
+
+    //定义一个时间基，表示​​每个采样点的时间跨度​​。例如，采样率44100Hz，那么每个采样点间隔就是1/44100秒
+    AVRational rat = (AVRational){1, m_pAudioCodecCtx->sample_rate};
+    //m_samples: 当前编码的音频帧包含的​​采样点数​​（例如，AAC通常每帧 1024 个采样点）
+    //av_rescale_q(a, bq, cq)函数：将时间戳a从时间基bq转换到时间基cq: a*(bq/cq)
+    //计算当前这帧音频的​​持续时间​​（以音频流的时间基为单位），并累加到全局的PTS上
+    //简化理解​​：增量 = (m_samples / m_pAudioCodecCtx->sample_rate) / m_pAudioStream->time_base;
+    //这样就得到了这帧音频在流的时间基下占多少“ tick ”，然后累加，为下一帧做好准备。
+    m_audioFramePts += av_rescale_q(m_samples, rat, m_pAudioStream->time_base);
+
+    writeFrame(&pkt);
+
+    memset(m_aacEncodeConfig->pcmBuffer, 0, m_pcmBufferSize);
+    if((captureSize - copyLength) > 0 ){
+        memcpy((&m_aacEncodeConfig->pcmBuffer[0]), pData+copyLength, captureSize - copyLength);
+        m_pcmWriteRemainSize = captureSize - copyLength;
+        m_pcmBufferRemainSize = m_pcmBufferSize - (captureSize - copyLength);
+    }
+
+    return nRet;
+}
+
+AACEncodeConfig* Muxer::initAudioEncodeConfiguration()
+{
+    int nRet = 0;
+    m_pcmBufferSize = 0;
+
+    AACEncodeConfig* aacConfig = NULL;
+    faacEncConfigurationPtr pConfiguration;
+
+    aacConfig = (AACEncodeConfig*)malloc(sizeof(AACEncodeConfig));
+
+    aacConfig->nSampleRate = m_audioOutSamplerate;
+    aacConfig->nChannels = 1;
+    aacConfig->nPCMBitSize = 16;
+
+    aacConfig->nInputSamples   = 0; //这两个参数大小需要通过faacEncOpen得到
+    aacConfig->nMaxOutputBytes = 0;
+
+    aacConfig->hEncoder = faacEncOpen(aacConfig->nSampleRate, aacConfig->nChannels, 
+                                        (unsigned long *)&aacConfig->nInputSamples, 
+                                        (unsigned long *)&aacConfig->nMaxOutputBytes);
+    if(aacConfig->hEncoder == NULL) {
+         printf("faacEncOpen() failed!\n");
+         return NULL;
+    }
+
+    m_pcmBufferSize = (int)(aacConfig->nInputSamples*(aacConfig->nPCMBitSize/8));
+    m_pcmBufferRemainSize = m_pcmBufferSize;
+
+    aacConfig->pcmBuffer = (unsigned char*)malloc(m_pcmBufferSize*sizeof(unsigned char));
+    memset(aacConfig->pcmBuffer, 0, m_pcmBufferSize);
+
+    aacConfig->aacBuffer = (unsigned char*)malloc(aacConfig->nMaxOutputBytes*sizeof(unsigned char));
+    memset(aacConfig->aacBuffer, 0, aacConfig->nMaxOutputBytes);
+
+
+    pConfiguration = faacEncGetCurrentConfiguration(aacConfig->hEncoder);
+
+    pConfiguration->inputFormat = FAAC_INPUT_16BIT;
+    pConfiguration->outputFormat = 0;
+    pConfiguration->aacObjectType = LOW;
+
+
+    nRet = faacEncSetConfiguration(aacConfig->hEncoder, pConfiguration);
+
+    return aacConfig;
+}
 
 ////////////////////////////////////////////////
 unsigned long Muxer::getTickCount()
